@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+  <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+  <!--
+    Extended console pattern that adds:
+      [traceId] — from Micrometer Tracing (OpenTelemetry bridge), auto-populated per request
+      [reqId]   — from RequestIdFilter MDC key, correlates frontend logs to backend logs
+  -->
+  <property name="CONSOLE_LOG_PATTERN"
+            value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${PID:- } --- [%15.15t] %-40.40logger{39} [%X{traceId:--} %X{requestId:--}] : %m%n%wEx"/>
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+
+  <logger name="com.tiendaropa" level="DEBUG"/>
+  <logger name="org.springframework.security" level="INFO"/>
+</configuration>

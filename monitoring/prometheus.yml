@@ -1,0 +1,19 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'tiendaropa-backend'
+    metrics_path: '/actuator/prometheus'
+    # /actuator/prometheus requires HTTP Basic auth (see SecurityConfig.actuatorMetricsFilterChain) —
+    # it is NOT public. These must match app.actuator.metrics-username/password
+    # (env vars ACTUATOR_METRICS_USERNAME / ACTUATOR_METRICS_PASSWORD) on the backend.
+    # Defaults below only work against a backend still using the dev fallback —
+    # if you set those env vars in production, update these values to match.
+    basic_auth:
+      username: 'prometheus'
+      password: 'change-me'
+    static_configs:
+      - targets: ['host.docker.internal:8080']
+    # If running inside the same Docker network, use:
+    # - targets: ['backend:8080']

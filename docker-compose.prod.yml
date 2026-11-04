@@ -1,0 +1,248 @@
+version: '3.9'
+
+# ── Producción: infra + app ──────────────────────────────────────────────────
+#
+# Secrets setup (run once on the server):
+#   cd secrets && bash create-secrets.sh
+#
+# Non-secret variables still required in the environment or a .env file:
+#   REDIS_PASSWORD, MAIL_HOST, MAIL_PORT, MAIL_USERNAME,
+#   FRONTEND_URL, CORS_ORIGINS, MP_NOTIFICATION_URL,
+#   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, SENTRY_DSN, SENTRY_ENABLED
+
+# ── Secret file definitions ───────────────────────────────────────────────────
+secrets:
+  db_password:
+    file: ./secrets/db_password
+  jwt_secret:
+    file: ./secrets/jwt_secret
+  mp_access_token:
+    file: ./secrets/mp_access_token
+  mp_webhook_secret:
+    file: ./secrets/mp_webhook_secret
+  mail_password:
+    file: ./secrets/mail_password
+  storage_access_key:
+    file: ./secrets/storage_access_key
+  storage_secret_key:
+    file: ./secrets/storage_secret_key
+
+services:
+  # ── Infraestructura ─────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: tiendaropa-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tiendaropa
+      POSTGRES_USER: tiendaropa
+      # Native _FILE support: reads password from the mounted secret file
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tiendaropa"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+        reservations:
+          memory: 256M
+    networks:
+      - internal
+
+  redis:
+    image: redis:7-alpine
+    container_name: tiendaropa-redis
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD:change-me}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 128M
+        reservations:
+          memory: 64M
+    networks:
+      - internal
+
+  minio:
+    image: minio/minio:RELEASE.2024-10-02T17-50-41Z
+    container_name: tiendaropa-minio
+    restart: unless-stopped
+    environment:
+      # Native _FILE support in MinIO (since RELEASE.2023-xx)
+      MINIO_ROOT_USER_FILE: /run/secrets/storage_access_key
+      MINIO_ROOT_PASSWORD_FILE: /run/secrets/storage_secret_key
+    secrets:
+      - storage_access_key
+      - storage_secret_key
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+        reservations:
+          memory: 256M
+    networks:
+      - internal
+
+  # ── Aplicación backend ────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tiendaropa-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    # The docker-entrypoint.sh script reads /run/secrets/* and exports them
+    # as env vars (uppercased filenames) before starting the JVM.
+    # Only non-secret config is listed here.
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_USERNAME: tiendaropa
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:change-me}
+      STORAGE_ENDPOINT: http://minio:9000
+      MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MP_NOTIFICATION_URL: ${MP_NOTIFICATION_URL:-}
+      FRONTEND_URL: ${FRONTEND_URL}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      SENTRY_ENABLED: ${SENTRY_ENABLED:-false}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-google-oauth-not-configured}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:change-me}
+      FACEBOOK_CLIENT_ID: ${FACEBOOK_CLIENT_ID:-facebook-oauth-not-configured}
+      FACEBOOK_CLIENT_SECRET: ${FACEBOOK_CLIENT_SECRET:change-me}
+      PUSH_VAPID_PUBLIC_KEY: ${PUSH_VAPID_PUBLIC_KEY:-}
+      PUSH_VAPID_PRIVATE_KEY: ${PUSH_VAPID_PRIVATE_KEY:-}
+      PUSH_VAPID_SUBJECT: ${PUSH_VAPID_SUBJECT:-mailto:noreply@solderstudio.com.ar}
+    secrets:
+      - db_password
+      - jwt_secret
+      - mp_access_token
+      - mp_webhook_secret
+      - mail_password
+      - storage_access_key
+      - storage_secret_key
+    ports:
+      - "8080:8080"
+    networks:
+      - internal
+      - external
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/liveness || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 1G
+        reservations:
+          memory: 512M
+
+  # ── Aplicación frontend ───────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tiendaropa-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "80:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO /dev/null http://localhost || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 64M
+        reservations:
+          memory: 32M
+    networks:
+      - external
+
+  # ── DB Backup ─────────────────────────────────────────────────────────────
+  # Runs pg_dump daily at 02:00 UTC and retains:
+  #   - 7 daily backups
+  #   - 4 weekly backups
+  #   - 6 monthly backups
+  #
+  # Backups are stored in the db_backups volume.
+  # To restore: docker run --rm -v tienda_db_backups:/backups -v /tmp:/restore \
+  #               postgres:16-alpine sh -c "gunzip -c /backups/daily/tiendaropa-<date>.sql.gz | \
+  #               psql -h <host> -U tiendaropa tiendaropa"
+  db-backup:
+    image: prodrigestivill/postgres-backup-local:16
+    container_name: tiendaropa-db-backup
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: tiendaropa
+      POSTGRES_USER: tiendaropa
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      SCHEDULE: "0 2 * * *"       # Daily at 02:00 UTC
+      BACKUP_KEEP_DAYS: "7"
+      BACKUP_KEEP_WEEKS: "4"
+      BACKUP_KEEP_MONTHS: "6"
+      HEALTHCHECK_PORT: "8080"
+    secrets:
+      - db_password
+    volumes:
+      - db_backups:/backups
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
+    internal: true   # sin acceso directo a internet
+  external:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+  db_backups:

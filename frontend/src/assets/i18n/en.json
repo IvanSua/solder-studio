@@ -1,0 +1,85 @@
+{
+  "nav": {
+    "catalog": "Catalog",
+    "suggestions": "Suggestions",
+    "admin": "Admin",
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "profile": "My Profile",
+    "orders": "My Orders",
+    "designs": "My Designs",
+    "wishlist": "Wishlist",
+    "cart": "Cart",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode"
+  },
+  "catalog": {
+    "search": "Search products...",
+    "noResults": "No results",
+    "filters": "Filters",
+    "sort": "Sort",
+    "loading": "Loading...",
+    "addToCart": "Add to Cart",
+    "buyNow": "Buy Now",
+    "compare": "Compare",
+    "comparing": "Comparing",
+    "lowStock": "Only {{count}} left!",
+    "outOfStock": "Out of Stock"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "checkout": "Checkout",
+    "continueShopping": "Continue Shopping",
+    "remove": "Remove",
+    "quantity": "Quantity"
+  },
+  "compare": {
+    "title": "Compare Products",
+    "empty": "No products to compare",
+    "emptyHint": "Add products from the catalog to compare them.",
+    "goToCatalog": "Go to Catalog",
+    "clearAll": "Clear All",
+    "product": "Product",
+    "price": "Price",
+    "availability": "Availability",
+    "sizes": "Sizes",
+    "colors": "Colors",
+    "customizable": "Customizable",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "yes": "Yes",
+    "no": "No",
+    "viewDetails": "View Details",
+    "continueShopping": "Continue Shopping"
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot your password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?"
+  },
+  "orders": {
+    "title": "My Orders",
+    "empty": "You don't have any orders yet",
+    "status": "Status",
+    "date": "Date",
+    "total": "Total",
+    "track": "Track"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "home": "Home"
+  }
+}

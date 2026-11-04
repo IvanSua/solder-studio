@@ -1,0 +1,273 @@
+/* Global styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  /* Solder Studio — magenta/fuchsia brand palette */
+  --primary: #e020c8;
+  --primary-dark: #b018a0;
+  --primary-light: #f560e0;
+  --secondary: #64748b;
+
+  /* Estado: success */
+  --success: #16a34a;
+  --success-text: #065f46;
+  --success-bg: #dcfce7;
+  --success-border: #86efac;
+
+  /* Estado: danger */
+  --danger: #dc2626;
+  --danger-text: #991b1b;
+  --danger-bg: #fee2e2;
+  --danger-border: #fca5a5;
+
+  /* Estado: warning */
+  --warning: #d97706;
+  --warning-text: #854d0e;
+  --warning-bg: #fef9c3;
+  --warning-border: #fde68a;
+
+  /* Estado: info */
+  --info: #2563eb;
+  --info-text: #1e40af;
+  --info-bg: #dbeafe;
+  --info-border: #93c5fd;
+
+  /* Fondos */
+  --bg: #ffffff;
+  --bg-secondary: #fdf4fc;
+  --bg-card: #ffffff;
+
+  /* Texto */
+  --text: #0f0a0e;
+  --text-secondary: #5a4a58;
+
+  /* Borde */
+  --border: #f0d8ee;
+  --radius: 8px;
+
+  /* Overlay */
+  --overlay: rgba(0, 0, 0, 0.5);
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  --primary: #f040d8;
+  --primary-dark: #f580e8;
+
+  /* Estado: success — versión oscura */
+  --success: #4ade80;
+  --success-text: #86efac;
+  --success-bg: rgba(22, 163, 74, 0.15);
+  --success-border: rgba(74, 222, 128, 0.3);
+
+  /* Estado: danger — versión oscura */
+  --danger: #f87171;
+  --danger-text: #fca5a5;
+  --danger-bg: rgba(220, 38, 38, 0.15);
+  --danger-border: rgba(248, 113, 113, 0.3);
+
+  /* Estado: warning — versión oscura */
+  --warning: #fbbf24;
+  --warning-text: #fde68a;
+  --warning-bg: rgba(217, 119, 6, 0.15);
+  --warning-border: rgba(251, 191, 36, 0.3);
+
+  /* Estado: info — versión oscura */
+  --info: #60a5fa;
+  --info-text: #93c5fd;
+  --info-bg: rgba(37, 99, 235, 0.15);
+  --info-border: rgba(96, 165, 250, 0.3);
+
+  /* Fondos */
+  --bg: #12020f;
+  --bg-secondary: #1e0a1a;
+  --bg-card: #1e0a1a;
+
+  /* Texto */
+  --text: #fdf0fc;
+  --text-secondary: #c494be;
+
+  /* Borde */
+  --border: #3d1a38;
+
+  /* Overlay */
+  --overlay: rgba(0, 0, 0, 0.75);
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+  background-color: var(--bg);
+  line-height: 1.6;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  cursor: pointer;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Utility for dark-mode aware cards */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+/* Dark mode: form elements inherit theme colors */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  color-scheme: dark;
+  color: var(--text);
+  background-color: var(--bg-secondary);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* ── Badges de estado globales ───────────────────────────────────────────── */
+/* Usar estas clases en cualquier componente en lugar de colores hardcodeados */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.badge-success {
+  background: var(--success-bg);
+  color: var(--success-text);
+  border-color: var(--success-border);
+}
+
+.badge-danger {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  border-color: var(--danger-border);
+}
+
+.badge-warning {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  border-color: var(--warning-border);
+}
+
+.badge-info {
+  background: var(--info-bg);
+  color: var(--info-text);
+  border-color: var(--info-border);
+}
+
+.badge-neutral {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-color: var(--border);
+}
+
+/* ── Botones de acción globales ───────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, opacity 0.2s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+.btn-primary:hover { opacity: 0.88; }
+
+.btn-danger {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  border-color: var(--danger-border);
+}
+.btn-danger:hover {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border);
+}
+.btn-ghost:hover {
+  background: var(--bg-secondary);
+  color: var(--text);
+}
+
+/* ── Overlay global (modales) ────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+/* ── Admin: ensure all text uses theme variables ─────────────────────────── */
+.admin-content,
+.admin-content * {
+  transition: color 0.15s, background-color 0.15s;
+}
+
+[data-theme="dark"] .admin-content th,
+[data-theme="dark"] .admin-content td,
+[data-theme="dark"] .admin-content label,
+[data-theme="dark"] .admin-content p,
+[data-theme="dark"] .admin-content span,
+[data-theme="dark"] .admin-content h1,
+[data-theme="dark"] .admin-content h2,
+[data-theme="dark"] .admin-content h3 {
+  color: var(--text);
+}

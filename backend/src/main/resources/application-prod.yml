@@ -1,0 +1,85 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+  # ── HikariCP — sized for real production load ──────────────────────────────
+  # Base application.yml sets maximum-pool-size: 20, which starves almost
+  # immediately under any sustained burst of traffic that touches the DB (every
+  # request queues waiting for a connection once the pool is exhausted).
+  #
+  # DB_POOL_MAX_SIZE must stay UNDER your Postgres plan's max_connections, leaving
+  # headroom for other clients (migrations, psql, backups). Railway's managed
+  # Postgres plans have different caps per tier — check yours before raising this
+  # blindly. A common starting point for a small/medium plan is 30-50; don't set
+  # it higher than the DB can actually support.
+  datasource:
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:30}
+      minimum-idle: ${DB_POOL_MIN_IDLE:10}
+      connection-timeout: 20000       # 20s — fail fast instead of queueing forever
+      max-lifetime: 1800000           # 30min — recycle before managed PG idles them out
+      leak-detection-threshold: 60000 # 60s — logs a warning if a connection isn't returned
+
+  # Disable OAuth2 auto-config in production if not configured
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:}
+            client-secret: ${GOOGLE_CLIENT_SECRET:}
+
+# Swagger/OpenAPI — completamente deshabilitado en producción
+# La superficie de API NO debe ser pública en un ambiente de producción
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+logging:
+  level:
+    com.tiendaropa: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Production-specific actuator — health/info stay public (see SecurityConfig),
+# metrics/prometheus require authentication (anyRequest().authenticated()).
+# NOTE: "prometheus" must stay in this list — the Grafana/Prometheus monitoring
+# stack (docker-compose.monitoring.yml) scrapes /actuator/prometheus. Omitting it
+# here previously left the dashboards silently empty in production.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: never  # Hide details from public in prod
+
+# ── Tomcat — sized for real production load ──────────────────────────────────
+# Spring Boot defaults (200 max threads, 100 accept-count queue) are tuned for
+# a small app, not a storefront that can get a traffic burst on a sale/drop.
+# These are still one instance's limits — sustaining something like 1000 req/s
+# also requires running multiple instances behind Railway's load balancer, not
+# just raising these numbers on a single container.
+server:
+  tomcat:
+    threads:
+      max: ${TOMCAT_MAX_THREADS:400}
+      min-spare: ${TOMCAT_MIN_SPARE_THREADS:20}
+    accept-count: ${TOMCAT_ACCEPT_COUNT:200}   # requests queued once all threads are busy
+    max-connections: ${TOMCAT_MAX_CONNECTIONS:10000}
+
+# Redis — fail fast in production (no silent fallback to in-memory)
+app:
+  redis:
+    fail-fast: true
+
+# Sentry — enable in production
+sentry:
+  enabled: true

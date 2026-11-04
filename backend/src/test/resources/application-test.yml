@@ -1,0 +1,98 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  flyway:
+    enabled: false   # H2 uses ddl-auto: create-drop; Flyway is PostgreSQL-only
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        format_sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  cache:
+    type: none
+
+  mail:
+    host: localhost
+    port: 25
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 30MB
+
+  task:
+    scheduling:
+      pool:
+        size: 1
+
+server:
+  port: 0
+
+app:
+  frontend-url: http://localhost:4200
+
+  jwt:
+    secret: test-secret-key-that-is-at-least-256-bits-long-for-hs256-algorithm-testing
+    expiration-ms: 3600000
+    refresh-expiration-ms: 86400000
+
+  storage:
+    type: minio
+    endpoint: http://localhost:9000
+    access-key: minioadmin
+    secret-key: minioadmin
+    bucket-name: test
+    presigned-url-expiry-minutes: 60
+
+  upload:
+    allowed-types: image/png,image/jpeg,image/webp
+    max-file-size-bytes: 10485760
+    max-files-per-design: 5
+    max-total-size-bytes: 31457280
+    min-resolution-recommended: 1500
+    min-resolution-absolute: 1000
+
+  shipping:
+    origin-postal-code: B1778
+
+  checkout:
+    reservation-expiry-minutes: 15
+
+  mercadopago:
+    access-token: test-token
+    webhook-secret: test-secret
+    notification-url: http://localhost:8080/api/payments/webhook
+
+  cors:
+    allowed-origins: http://localhost:4200
+
+  auth:
+    max-failed-attempts: 5
+    lockout-minutes: 15
+    token-expiry-minutes: 30
+    verification-token-hours: 24
+    trusted-proxy-hops: 1
+    rate-limit:
+      login: 10
+      register: 5
+      forgot-password: 5
+      payments: 30
+      global: 300
+
+logging:
+  level:
+    com.tiendaropa: WARN
+    org.springframework: WARN

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!--
+  Variables:
+    firstName    : String
+    orderId      : Long
+    statusKey    : String  (e.g. "SHIPPED")
+    statusLabel  : String  (e.g. "Enviado")
+    icon         : String  (emoji)
+    ordersUrl    : String
+    frontendUrl  : String
+-->
+<head>
+  <meta charset="UTF-8">
+  <title>Actualización de tu pedido – Solder Studio</title>
+</head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+             background:#f9fafb;padding:0;margin:0;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0"
+         style="background:#f9fafb;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table width="520" cellpadding="0" cellspacing="0" border="0"
+               style="max-width:520px;width:100%;background:#ffffff;border-radius:12px;
+                      border:1px solid #e5e7eb;overflow:hidden;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#111827;padding:24px 32px;">
+              <span style="color:#ffffff;font-size:1.3rem;font-weight:800;letter-spacing:-0.5px;">
+                Solder Studio
+              </span>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px;">
+
+              <p style="font-size:2.4rem;text-align:center;margin:0 0 12px;"
+                 th:text="${icon}">📦</p>
+
+              <h2 style="margin:0 0 16px;color:#111827;text-align:center;font-size:1.2rem;font-weight:700;">
+                Actualización de tu pedido
+              </h2>
+
+              <p style="color:#374151;margin:0 0 8px;">
+                Hola <strong th:text="${firstName}">Usuario</strong>,
+              </p>
+              <p style="color:#374151;margin:0 0 16px;">
+                Tu pedido <strong th:text="'#' + ${orderId}">#123</strong>
+                ha cambiado de estado a:
+              </p>
+
+              <!-- Status badge -->
+              <div style="background:#f3f4f6;border-radius:8px;padding:14px 20px;
+                          text-align:center;margin:0 0 24px;">
+                <span style="font-weight:700;font-size:1.1rem;color:#111827;"
+                      th:text="${statusLabel}">Estado</span>
+              </div>
+
+              <!-- CTA -->
+              <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="border-radius:8px;background:#2563eb;">
+                    <a th:href="${ordersUrl}"
+                       href="#"
+                       style="display:inline-block;background:#2563eb;color:#ffffff;
+                              text-decoration:none;padding:11px 26px;border-radius:8px;
+                              font-weight:600;font-size:0.9rem;">
+                      Ver mis pedidos
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:14px 32px;
+                       text-align:center;font-size:0.78rem;color:#9ca3af;">
+              Solder Studio &middot; Buenos Aires, Argentina
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Página principal -->
+  <url>
+    <loc>https://solderstudio.com.ar/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Autenticación -->
+  <url>
+    <loc>https://solderstudio.com.ar/auth</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://solderstudio.com.ar/auth/reset-password</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://solderstudio.com.ar/verificar-email</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!-- Páginas públicas -->
+  <url>
+    <loc>https://solderstudio.com.ar/sugerencias</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Legal (servidas desde el backend) -->
+  <url>
+    <loc>https://solderstudio.com.ar/legal/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://solderstudio.com.ar/legal/terms</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <!--
+    NOTA: Las rutas protegidas (/cart, /checkout, /orders, /profile, /wishlist,
+    /designs, /admin, /worker) NO se incluyen en el sitemap ya que requieren
+    autenticación y no son indexables por motores de búsqueda.
+
+    Las rutas dinámicas /product/:slug se gestionan dinámicamente.
+    Si en el futuro se implementa SSR, estas se pueden agregar dinámicamente.
+  -->
+</urlset>

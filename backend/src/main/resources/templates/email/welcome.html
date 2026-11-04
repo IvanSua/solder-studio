@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!--
+  Variables expected in Thymeleaf context:
+    firstName     : String
+    referralCode  : String (nullable)
+    frontendUrl   : String
+-->
+<head>
+  <meta charset="UTF-8">
+  <title>¡Bienvenido/a a Solder Studio!</title>
+</head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+             background:#f9fafb;padding:0;margin:0;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0"
+         style="background:#f9fafb;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" border="0"
+               style="max-width:560px;width:100%;background:#ffffff;border-radius:12px;
+                      border:1px solid #e5e7eb;overflow:hidden;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#111827;padding:24px 32px;">
+              <span style="color:#ffffff;font-size:1.3rem;font-weight:800;letter-spacing:-0.5px;">
+                Solder Studio
+              </span>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px;">
+
+              <p style="font-size:2.4rem;text-align:center;margin:0 0 8px;">👋</p>
+
+              <h2 style="margin:0 0 16px;text-align:center;color:#111827;font-size:1.25rem;font-weight:700;">
+                ¡Hola, <span th:text="${firstName}">Usuario</span>! Bienvenido/a
+              </h2>
+
+              <p style="color:#374151;line-height:1.7;margin:0 0 16px;">
+                Tu cuenta en <strong>Solder Studio</strong> ya está activa.
+                Explorá nuestra colección de ropa personalizable y empezá a
+                acumular puntos con cada compra.
+              </p>
+
+              <!-- Referral code block (shown only when referralCode is present) -->
+              <div th:if="${referralCode != null and !#strings.isEmpty(referralCode)}"
+                   style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;
+                          padding:16px 20px;margin:20px 0;text-align:center;">
+                <p style="margin:0 0 6px;font-size:0.78rem;color:#15803d;font-weight:700;
+                          text-transform:uppercase;letter-spacing:0.06em;">Tu código de referido</p>
+                <p style="margin:0;font-size:1.5rem;font-weight:800;color:#166534;
+                          letter-spacing:0.12em;" th:text="${referralCode}">ABCDE</p>
+                <p style="margin:6px 0 0;font-size:0.78rem;color:#16a34a;">
+                  Compartilo y ganá <strong>200 puntos</strong> por cada amigo que se registre
+                </p>
+              </div>
+
+              <!-- CTA buttons -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                     style="margin-top:24px;">
+                <tr>
+                  <td style="padding-right:6px;">
+                    <a th:href="${frontendUrl + '/catalogo'}"
+                       href="#"
+                       style="display:block;background:#111827;color:#ffffff;text-decoration:none;
+                              padding:12px 16px;border-radius:8px;font-weight:600;font-size:0.9rem;
+                              text-align:center;">
+                      Ver catálogo
+                    </a>
+                  </td>
+                  <td style="padding-left:6px;">
+                    <a th:href="${frontendUrl + '/perfil'}"
+                       href="#"
+                       style="display:block;background:#f3f4f6;color:#374151;text-decoration:none;
+                              padding:12px 16px;border-radius:8px;font-weight:600;font-size:0.9rem;
+                              text-align:center;">
+                      Mi perfil
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:14px 32px;
+                       text-align:center;font-size:0.78rem;color:#9ca3af;">
+              Solder Studio &middot; Buenos Aires, Argentina
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

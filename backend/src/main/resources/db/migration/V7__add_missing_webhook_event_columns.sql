@@ -1,0 +1,5 @@
+ALTER TABLE payment_webhook_events
+    ADD COLUMN IF NOT EXISTS processed_at TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS payload_hash VARCHAR(64),
+    ADD COLUMN IF NOT EXISTS retry_count INT NOT NULL DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS next_retry_at TIMESTAMPTZ;

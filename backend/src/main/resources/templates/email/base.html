@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!--
+  Base layout fragment shared by all transactional emails.
+  Usage:
+    <html th:replace="~{email/base :: layout(~{::title}, ~{::body-content})}">
+-->
+<body>
+<th:block th:fragment="layout(pageTitle, bodyContent)">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:replace="${pageTitle}">Email</title>
+</head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+             background:#f9fafb;padding:0;margin:0;-webkit-font-smoothing:antialiased;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0"
+         style="background:#f9fafb;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" border="0"
+               style="max-width:560px;width:100%;background:#ffffff;border-radius:12px;
+                      border:1px solid #e5e7eb;overflow:hidden;">
+
+          <!-- Brand header -->
+          <tr>
+            <td style="background:#111827;padding:24px 32px;">
+              <span style="color:#ffffff;font-size:1.3rem;font-weight:800;letter-spacing:-0.5px;">
+                Solder Studio
+              </span>
+            </td>
+          </tr>
+
+          <!-- Body content injected by each template -->
+          <tr>
+            <td style="padding:32px;">
+              <th:block th:replace="${bodyContent}"/>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:14px 32px;
+                       text-align:center;font-size:0.78rem;color:#9ca3af;">
+              Solder Studio &middot; Buenos Aires, Argentina &middot;
+              <a th:href="${#vars.frontendUrl + '/contacto'}"
+                 href="#"
+                 style="color:#9ca3af;text-decoration:none;">Contacto</a>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
+</th:block>
+</body>
+</html>

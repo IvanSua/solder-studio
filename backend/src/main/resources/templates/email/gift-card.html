@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!--
+  Variables:
+    firstName        : String
+    giftCardCode    : String
+    amount          : String (formatted currency)
+    balance         : String (formatted currency)
+    expiryDate      : String (formatted date)
+    giftCardsUrl    : String
+    frontendUrl     : String
+-->
+<head>
+  <meta charset="UTF-8">
+  <title>Tu Gift Card de Solder Studio 🎁</title>
+</head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+             background:#f9fafb;padding:0;margin:0;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0"
+         style="background:#f9fafb;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table width="520" cellpadding="0" cellspacing="0" border="0"
+               style="max-width:520px;width:100%;background:#ffffff;border-radius:12px;
+                      border:1px solid #e5e7eb;overflow:hidden;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#a855f7 100%);padding:24px 32px;">
+              <span style="color:#ffffff;font-size:1.3rem;font-weight:800;letter-spacing:-0.5px;">
+                🎁 Solder Studio
+              </span>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px;">
+
+              <p style="font-size:3rem;text-align:center;margin:0 0 12px;">🎁</p>
+
+              <h2 style="margin:0 0 8px;color:#111827;text-align:center;font-size:1.3rem;font-weight:700;">
+                ¡Tu Gift Card está lista!
+              </h2>
+
+              <p style="color:#6b7280;text-align:center;margin:0 0 24px;font-size:0.9rem;">
+                Aquí tenés los detalles de tu tarjeta de regalo
+              </p>
+
+              <p style="color:#374151;margin:0 0 20px;">
+                Hola <strong th:text="${firstName}">Usuario</strong>,
+              </p>
+
+              <!-- Gift Card Code -->
+              <div style="background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#a855f7 100%);
+                          border-radius:16px;padding:24px;text-align:center;margin:0 0 20px;color:white;">
+                <p style="margin:0 0 8px;font-size:0.85rem;opacity:0.9;">
+                  Código de tu Gift Card
+                </p>
+                <p style="margin:0;font-size:2rem;font-weight:800;letter-spacing:3px;font-family:monospace;"
+                   th:text="${giftCardCode}">
+                  XXXX-XXXX
+                </p>
+              </div>
+
+              <!-- Amount and Balance -->
+              <div style="display:flex;gap:12px;margin:0 0 20px;">
+                <div style="flex:1;background:#f3f4f6;border-radius:10px;padding:16px;text-align:center;">
+                  <p style="margin:0 0 4px;color:#6b7280;font-size:0.8rem;">Valor total</p>
+                  <p style="margin:0;color:#111827;font-weight:700;font-size:1.2rem;"
+                     th:text="${amount}">
+                    $5.000 ARS
+                  </p>
+                </div>
+                <div style="flex:1;background:#f3f4f6;border-radius:10px;padding:16px;text-align:center;">
+                  <p style="margin:0 0 4px;color:#6b7280;font-size:0.8rem;">Saldo disponible</p>
+                  <p style="margin:0;color:#111827;font-weight:700;font-size:1.2rem;"
+                     th:text="${balance}">
+                    $5.000 ARS
+                  </p>
+                </div>
+              </div>
+
+              <!-- Expiry -->
+              <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:14px 20px;margin:0 0 24px;">
+                <p style="margin:0;color:#92400e;font-size:0.875rem;">
+                  ⏰ <strong>Válida hasta:</strong> <span th:text="${expiryDate}">15 de marzo de 2027</span>
+                </p>
+              </div>
+
+              <!-- Instructions -->
+              <div style="background:#f9fafb;border-radius:8px;padding:16px 20px;margin:0 0 24px;">
+                <p style="margin:0 0 8px;color:#111827;font-weight:600;font-size:0.9rem;">
+                  ¿Cómo usar tu Gift Card?
+                </p>
+                <ol style="margin:0;padding-left:20px;color:#6b7280;font-size:0.875rem;line-height:1.6;">
+                  <li>Elegí los productos que querés comprar</li>
+                  <li>En el checkout, ingresá tu código en "Tengo una Gift Card"</li>
+                  <li>El descuento se aplica automáticamente</li>
+                </ol>
+              </div>
+
+              <!-- CTA -->
+              <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td style="border-radius:8px;background:#6366f1;text-align:center;">
+                    <a th:href="${giftCardsUrl}"
+                       href="#"
+                       style="display:block;background:#6366f1;color:#ffffff;
+                              text-decoration:none;padding:13px 26px;border-radius:8px;
+                              font-weight:600;font-size:0.95rem;">
+                      Ver mis Gift Cards →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:14px 32px;
+                       text-align:center;font-size:0.78rem;color:#9ca3af;">
+              Solder Studio &middot; Buenos Aires, Argentina &middot;
+              <a th:href="${frontendUrl + '/gift-cards'}"
+                 href="#"
+                 style="color:#6366f1;text-decoration:none;">Ver Gift Cards</a>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

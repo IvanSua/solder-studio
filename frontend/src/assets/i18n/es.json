@@ -1,0 +1,85 @@
+{
+  "nav": {
+    "catalog": "Catálogo",
+    "suggestions": "Sugerencias",
+    "admin": "Admin",
+    "login": "Ingresar",
+    "logout": "Cerrar sesión",
+    "profile": "Mi perfil",
+    "orders": "Mis pedidos",
+    "designs": "Mis diseños",
+    "wishlist": "Lista de deseos",
+    "cart": "Carrito",
+    "darkMode": "Modo oscuro",
+    "lightMode": "Modo claro"
+  },
+  "catalog": {
+    "search": "Buscar productos...",
+    "noResults": "Sin resultados",
+    "filters": "Filtros",
+    "sort": "Ordenar",
+    "loading": "Cargando...",
+    "addToCart": "Agregar al carrito",
+    "buyNow": "Comprar ahora",
+    "compare": "Comparar",
+    "comparing": "Comparando",
+    "lowStock": "¡Solo quedan {{count}}!",
+    "outOfStock": "Sin stock"
+  },
+  "cart": {
+    "title": "Carrito de compras",
+    "empty": "Tu carrito está vacío",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "checkout": "Finalizar compra",
+    "continueShopping": "Seguir comprando",
+    "remove": "Eliminar",
+    "quantity": "Cantidad"
+  },
+  "compare": {
+    "title": "Comparar Productos",
+    "empty": "No hay productos para comparar",
+    "emptyHint": "Agrega productos desde el catálogo para poder compararlos.",
+    "goToCatalog": "Ir al catálogo",
+    "clearAll": "Limpiar todo",
+    "product": "Producto",
+    "price": "Precio",
+    "availability": "Disponibilidad",
+    "sizes": "Talles",
+    "colors": "Colores",
+    "customizable": "Personalizable",
+    "inStock": "En stock",
+    "outOfStock": "Sin stock",
+    "yes": "Sí",
+    "no": "No",
+    "viewDetails": "Ver detalles",
+    "continueShopping": "Continuar comprando"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tenés cuenta?",
+    "hasAccount": "¿Ya tenés cuenta?"
+  },
+  "orders": {
+    "title": "Mis pedidos",
+    "empty": "No tenés pedidos todavía",
+    "status": "Estado",
+    "date": "Fecha",
+    "total": "Total",
+    "track": "Rastrear"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "retry": "Reintentar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "back": "Volver",
+    "home": "Inicio"
+  }
+}

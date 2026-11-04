@@ -1,0 +1,264 @@
+spring:
+  application:
+    name: tienda-de-ropa
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/tiendaropa
+    username: ${DB_USERNAME:tiendaropa}
+    password: ${DB_PASSWORD:change-me}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-init-sql: "SET client_encoding = 'UTF8'"
+
+  # Flyway manages the schema — disable Spring's legacy sql.init
+  sql:
+    init:
+      mode: never
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true   # safe when applying to an existing DB for the first time
+    validate-on-migrate: true
+    out-of-order: false
+
+  jpa:
+    hibernate:
+      ddl-auto: validate        # Hibernate validates the schema after Flyway runs
+    open-in-view: false
+    properties:
+      hibernate:
+        # No dialect property — Hibernate 6 auto-detects it from the JDBC connection
+        # metadata. Setting it explicitly is deprecated (HHH90000025) and unnecessary.
+        format_sql: true
+        default_batch_fetch_size: 20
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 2000ms
+
+  # Cache type is determined at runtime by RedisConfig:
+  # - Redis reachable → RedisCacheManager (distributed)
+  # - Redis unavailable → ConcurrentMapCacheManager (in-memory fallback)
+  cache:
+    type: none  # Disable Spring Boot's auto-configured cache manager; RedisConfig provides the bean
+
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+  # Google OAuth2 — set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET env vars to enable.
+  # Without them the app starts normally; only the Google login button won't work.
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:google-oauth-not-configured}
+            client-secret: ${GOOGLE_CLIENT_SECRET:change-me}
+            scope:
+              - openid
+              - email
+              - profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+          facebook:
+            client-id: ${FACEBOOK_CLIENT_ID:facebook-oauth-not-configured}
+            client-secret: ${FACEBOOK_CLIENT_SECRET:change-me}
+            scope:
+              - email
+              - public_profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/facebook"
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 30MB
+
+server:
+  # Railway (and most PaaS) inject a PORT env var and route traffic to whatever
+  # port the container actually listens on — hardcoding 8080 here would make the
+  # app unreachable on Railway. Falls back to 8080 for local/docker-compose use
+  # where PORT isn't set.
+  port: ${PORT:8080}
+
+app:
+  jwt:
+    # DEV ONLY fallback — NEVER use this in production!
+    # Set JWT_SECRET env var in production (must be 32+ chars).
+    secret: ${JWT_SECRET:change-me-local-development-only-at-least-32-bytes-long}
+    # Was 24h — long-lived for a platform that processes payments, and a stolen/
+    # leaked access token stayed valid for a full day even after logout if Redis
+    # (which backs the logout blacklist) happened to be unavailable at that moment.
+    # 30 min is safe to lower to because the frontend already does silent refresh
+    # on 401 via the refresh token (7 days) — see auth-error.interceptor.ts —
+    # so this is invisible to the user in normal operation.
+    expiration-ms: ${JWT_EXPIRATION_MS:1800000}  # 30 minutes
+    refresh-expiration-ms: 604800000  # 7 days
+
+  storage:
+    type: minio
+    endpoint: ${STORAGE_ENDPOINT:http://localhost:9000}
+    access-key: ${STORAGE_ACCESS_KEY:change-me}
+    secret-key: ${STORAGE_SECRET_KEY:change-me}
+    bucket-name: ${STORAGE_BUCKET:tiendaropa}
+    presigned-url-expiry-minutes: 60
+
+  upload:
+    allowed-types: image/png,image/jpeg,image/webp
+    max-file-size-bytes: 10485760  # 10 MB
+    max-files-per-design: 5
+    max-total-size-bytes: 31457280  # 30 MB
+    min-resolution-recommended: 1500
+    min-resolution-absolute: 1000
+
+  checkout:
+    reservation-expiry-minutes: 15
+
+  design:
+    # DRAFT designs older than this many hours are purged by DraftDesignCleanupJob.
+    # Keep low enough to free storage but high enough to not cut off slow connections.
+    draft-expiry-hours: 2
+
+  mercadopago:
+    access-token: ${MP_ACCESS_TOKEN:}
+    webhook-secret: ${MP_WEBHOOK_SECRET:}
+    notification-url: ${MP_NOTIFICATION_URL:}
+
+  frontend-url: ${FRONTEND_URL:http://localhost:4200}
+
+  store:
+    mp-alias: ${STORE_MP_ALIAS:}       # Alias de MercadoPago para pagos manuales (ej: solderstudio)
+    mp-cvu: ${STORE_MP_CVU:}           # CVU/CBU para transferencias (opcional)
+
+  mail:
+    from-address: ${MAIL_FROM_ADDRESS:contacto@example.com}
+    from-name: ${MAIL_FROM_NAME:Solder Studio}
+
+  webhook:
+    retry-interval-ms: 300000   # 5 minutos entre cada run del job
+    retry-batch-size: 50        # máx eventos por run
+
+  shipping:
+    origin-postal-code: B1778   # Ciudad Evita, Buenos Aires — depósito de despacho
+
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:4200}
+
+  auth:
+    max-failed-attempts: 5       # lock account after this many consecutive failures
+    lockout-minutes: 15          # duration of temporary lockout
+    token-expiry-minutes: 30     # password reset / email verification tokens
+    verification-token-hours: 24 # email verification link lifetime
+    low-stock-threshold: 5       # umbral para notificaciones de stock bajo
+    # Trusted reverse-proxy hops in front of the app (Railway/Render edge = 1).
+    # Used to pick the real client IP from X-Forwarded-For instead of trusting
+    # a value the client could prepend themselves. Set to 0 only if the app is
+    # reachable directly (no proxy in front) — NOT the case in production.
+    trusted-proxy-hops: 1
+    rate-limit:
+      login: 10           # max login attempts per minute per IP
+      register: 5         # max register attempts per minute per IP
+      forgot-password: 5  # max forgot-password attempts per minute per IP
+      payments: 30        # max payment webhook calls per minute per IP
+      global: 300          # fallback: max requests per minute per IP on every other route
+
+# ── Event scraper ─────────────────────────────────────────────────────────────
+# Ticketmaster Discovery API — free tier (200 req/day)
+#   Registrarse en: https://developer.ticketmaster.com/
+#   1. Crear cuenta → My Apps → Create New App → copiar "Consumer Key"
+#   2. Configurar variable de entorno: TM_API_KEY=<Consumer Key>
+events:
+  ticketmaster:
+    apikey: ${TM_API_KEY:}
+
+# Actuator — health checks, metrics and distributed tracing
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when_authorized
+      probes:
+        enabled: true  # Kubernetes liveness/readiness probes
+  health:
+    db:
+      enabled: true
+    redis:
+      enabled: true
+  info:
+    env:
+      enabled: true
+  # OpenTelemetry / Distributed Tracing
+  # traceId and spanId are added to MDC automatically — appear in every log line.
+  # Set OTEL_EXPORTER_OTLP_ENDPOINT in production to send spans to Jaeger or Tempo.
+  # Example: OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318
+  tracing:
+    sampling:
+      probability: 1.0   # 100% in dev; override to 0.1 in prod via env var
+  metrics:
+    tags:
+      application: tiendaropa
+      environment: ${SPRING_PROFILES_ACTIVE:dev}
+
+# Web Push Notifications (VAPID)
+# Generate keys once with: node -e "const w=require('web-push'); const k=w.generateVAPIDKeys(); console.log(JSON.stringify(k,null,2));"
+# Then set PUSH_VAPID_PUBLIC_KEY and PUSH_VAPID_PRIVATE_KEY as environment variables.
+push:
+  vapid:
+    public-key:  ${PUSH_VAPID_PUBLIC_KEY:}
+    private-key: ${PUSH_VAPID_PRIVATE_KEY:}
+    subject:     ${PUSH_VAPID_SUBJECT:mailto:noreply@solderstudio.com.ar}
+
+# OpenAPI / Swagger UI
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+  show-actuator: false
+
+logging:
+  level:
+    com.tiendaropa: DEBUG
+    org.springframework.security: INFO
+
+# Resilience4j — circuit breakers for external service calls
+resilience4j:
+  circuitbreaker:
+    instances:
+      mercadopago:
+        register-health-indicator: true
+        # Open the circuit after 50% failures in a window of 10 calls
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        # Also open on slow calls (>10s) exceeding 80% of the window
+        slow-call-duration-threshold: 10s
+        slow-call-rate-threshold: 80
+        # Stay open 30s, then allow 3 test calls in half-open state
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+
+# Sentry — error tracking (DSN must be set in production)
+sentry:
+  dsn: ${SENTRY_DSN:}
+  # Only send errors in production
+  enabled: ${SENTRY_ENABLED:false}
+  environment: ${SPRING_PROFILES_ACTIVE:dev}
+  # Sample rate: capture 20% of errors (reduce noise)
+  traces-sample-rate: 0.2
+  # Don't send healthy pings (keep logs clean)
+  health:
+    enabled: false

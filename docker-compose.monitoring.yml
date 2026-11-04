@@ -1,0 +1,72 @@
+version: '3.9'
+
+# ── Local observability stack ────────────────────────────────────────────────
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.monitoring.yml up -d
+#
+# Services:
+#   Prometheus  → http://localhost:9090
+#   Grafana     → http://localhost:3000  (admin/admin)
+#   Tempo       → http://localhost:3200  (OTLP gRPC :4317, HTTP :4318)
+#
+# Spring Boot config (already in application.yml):
+#   management.endpoints.web.exposure.include: ...,prometheus
+#   management.tracing.sampling.probability: 1.0
+#
+# To send traces to Tempo, set this env var before starting the backend:
+#   OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  prometheus:
+    image: prom/prometheus:v2.51.2
+    container_name: tiendaropa-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=7d'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: tiendaropa-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+      GF_FEATURE_TOGGLES_ENABLE: traceqlEditor
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+  tempo:
+    image: grafana/tempo:2.4.1
+    container_name: tiendaropa-tempo
+    command: ["-config.file=/etc/tempo.yml"]
+    ports:
+      - "3200:3200"   # Tempo HTTP API
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP  ← set OTEL_EXPORTER_OTLP_ENDPOINT here
+    volumes:
+      - ./monitoring/tempo.yml:/etc/tempo.yml:ro
+      - tempo_data:/tmp/tempo
+    restart: unless-stopped
+
+volumes:
+  prometheus_data:
+  grafana_data:
+  tempo_data:

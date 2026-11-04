@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!--
+  Variables:
+    firstName    : String
+    productName  : String
+    productUrl   : String  (frontendUrl + /producto/{slug})
+    frontendUrl  : String
+-->
+<head>
+  <meta charset="UTF-8">
+  <title>¡Volvió el stock! – Solder Studio</title>
+</head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+             background:#f9fafb;padding:0;margin:0;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0"
+         style="background:#f9fafb;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table width="520" cellpadding="0" cellspacing="0" border="0"
+               style="max-width:520px;width:100%;background:#ffffff;border-radius:12px;
+                      border:1px solid #e5e7eb;overflow:hidden;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#111827;padding:24px 32px;">
+              <span style="color:#ffffff;font-size:1.3rem;font-weight:800;letter-spacing:-0.5px;">
+                Solder Studio
+              </span>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px;">
+
+              <p style="font-size:2.4rem;text-align:center;margin:0 0 8px;">🎉</p>
+
+              <h2 style="margin:0 0 16px;color:#111827;text-align:center;font-size:1.2rem;font-weight:700;">
+                ¡Stock disponible!
+              </h2>
+
+              <p style="color:#374151;margin:0 0 8px;">
+                Hola <strong th:text="${firstName}">Usuario</strong>,
+              </p>
+              <p style="color:#374151;line-height:1.7;margin:0 0 16px;">
+                Un artículo de tu lista de deseos volvió a estar disponible:
+              </p>
+
+              <!-- Product name box -->
+              <div style="background:#f3f4f6;border-radius:8px;padding:14px 20px;
+                          text-align:center;margin:0 0 24px;">
+                <p style="margin:0;font-weight:700;font-size:1rem;color:#111827;"
+                   th:text="${productName}">Producto</p>
+              </div>
+
+              <!-- CTA -->
+              <table cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;">
+                <tr>
+                  <td style="border-radius:8px;background:#2563eb;">
+                    <a th:href="${productUrl}"
+                       href="#"
+                       style="display:inline-block;background:#2563eb;color:#ffffff;
+                              text-decoration:none;padding:12px 28px;border-radius:8px;
+                              font-weight:600;font-size:0.9375rem;">
+                      Ver producto
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:14px 32px;
+                       text-align:center;font-size:0.78rem;color:#9ca3af;">
+              Solder Studio &middot; Buenos Aires, Argentina
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

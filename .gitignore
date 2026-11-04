@@ -1,0 +1,51 @@
+# Java / Maven
+backend/target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+hs_err_pid*
+
+# IDE
+.idea/
+*.iml
+*.iws
+.vscode/
+*.swp
+*.swo
+*~
+
+# Eclipse
+backend/.classpath
+backend/.factorypath
+backend/.project
+backend/.settings/
+
+# Node / Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.cache/
+frontend/coverage/
+frontend/nul
+frontend/.../
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code (herramienta de desarrollo — no va al repo)
+.claude/
+
+# Environment
+.env
+*.env.local
+
+# Credentials
+*.pem
+*.key
+credentials.json
+
+# Docker secrets (created locally by create-secrets.sh — NEVER commit)
+secrets/

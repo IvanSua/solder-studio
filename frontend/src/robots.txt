@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Rutas privadas — no indexar
+Disallow: /checkout
+Disallow: /cart
+Disallow: /orders
+Disallow: /profile
+Disallow: /admin
+Disallow: /worker
+Disallow: /auth/
+
+Sitemap: https://solderstudio.com.ar/sitemap.xml

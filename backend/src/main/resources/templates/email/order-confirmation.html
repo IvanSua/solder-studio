@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!--
+  Variables:
+    firstName       : String
+    order           : Order entity  (id, items, totalAmount, shippingAddress, currencyCode)
+    ordersUrl       : String  (frontendUrl + /orders)
+    frontendUrl     : String
+-->
+<head>
+  <meta charset="UTF-8">
+  <title>Pedido confirmado – Solder Studio</title>
+</head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+             background:#f9fafb;padding:0;margin:0;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0"
+         style="background:#f9fafb;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table width="580" cellpadding="0" cellspacing="0" border="0"
+               style="max-width:580px;width:100%;background:#ffffff;border-radius:12px;
+                      border:1px solid #e5e7eb;overflow:hidden;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#111827;padding:24px 32px;">
+              <span style="color:#ffffff;font-size:1.3rem;font-weight:800;letter-spacing:-0.5px;">
+                Solder Studio
+              </span>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px;">
+
+              <h2 style="margin:0 0 8px;color:#111827;font-size:1.25rem;font-weight:700;">
+                ¡Tu pedido está confirmado! 🎉
+              </h2>
+
+              <p style="color:#374151;margin:0 0 20px;line-height:1.6;">
+                Hola <strong th:text="${firstName}">Usuario</strong>,
+                recibimos tu pago y ya estamos preparando tu pedido.
+              </p>
+
+              <!-- Order number badge -->
+              <div style="display:inline-block;background:#f3f4f6;border-radius:8px;
+                          padding:10px 16px;margin-bottom:20px;">
+                <span style="color:#6b7280;font-size:0.85rem;">Número de pedido: </span>
+                <strong style="color:#111827;" th:text="'#' + ${order.id}">#123</strong>
+              </div>
+
+              <!-- Items table -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                     style="border-collapse:collapse;margin:0 0 20px;">
+                <thead>
+                  <tr style="border-bottom:2px solid #e5e7eb;">
+                    <th style="text-align:left;padding:8px 0;font-size:0.82rem;color:#6b7280;font-weight:500;">Producto</th>
+                    <th style="text-align:center;padding:8px 0;font-size:0.82rem;color:#6b7280;font-weight:500;width:50px;">Cant.</th>
+                    <th style="text-align:right;padding:8px 0;font-size:0.82rem;color:#6b7280;font-weight:500;width:100px;">Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody style="border-bottom:1px solid #e5e7eb;">
+                  <tr th:each="item : ${order.items}">
+                    <td style="padding:8px 0;color:#111827;font-size:0.9rem;">
+                      <span th:text="${item.productName}">Producto</span>
+                      <span style="color:#6b7280;font-size:0.82rem;">
+                        (<span th:text="${item.variantColor}">Color</span>
+                        /
+                        <span th:text="${item.variantSize}">Talle</span>)
+                      </span>
+                    </td>
+                    <td style="padding:8px 0;text-align:center;color:#374151;font-size:0.9rem;"
+                        th:text="${item.quantity}">1</td>
+                    <td style="padding:8px 0;text-align:right;color:#374151;font-size:0.9rem;"
+                        th:text="${#numbers.formatDecimal(item.unitPriceAmount * item.quantity / 100.0, 1, 'POINT', 2, 'COMMA')}">0,00</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="2" style="padding:12px 0 4px;font-weight:700;font-size:0.95rem;color:#111827;">
+                      Total
+                    </td>
+                    <td style="padding:12px 0 4px;text-align:right;font-weight:700;font-size:1.05rem;color:#111827;"
+                        th:text="${#numbers.formatDecimal(order.totalAmount / 100.0, 1, 'POINT', 2, 'COMMA')}">0,00</td>
+                  </tr>
+                </tfoot>
+              </table>
+
+              <!-- Shipping address (optional) -->
+              <div th:if="${order.shippingAddress != null}"
+                   style="font-size:0.875rem;color:#374151;margin-bottom:20px;">
+                <strong>Dirección de envío:</strong>
+                <span th:text="${order.shippingAddress.street
+                  + (order.shippingAddress.apartment != null ? ', ' + order.shippingAddress.apartment : '')
+                  + ', ' + order.shippingAddress.city
+                  + ', ' + order.shippingAddress.province
+                  + (order.shippingAddress.postalCode != null ? ' (' + order.shippingAddress.postalCode + ')' : '')}">
+                  Dirección
+                </span>
+              </div>
+
+              <!-- CTA -->
+              <table cellpadding="0" cellspacing="0" border="0" style="margin-top:24px;">
+                <tr>
+                  <td style="border-radius:8px;background:#2563eb;">
+                    <a th:href="${ordersUrl}"
+                       href="#"
+                       style="display:inline-block;background:#2563eb;color:#ffffff;
+                              text-decoration:none;padding:12px 28px;border-radius:8px;
+                              font-weight:600;font-size:0.9375rem;">
+                      Ver mis pedidos
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:14px 32px;
+                       text-align:center;font-size:0.78rem;color:#9ca3af;">
+              Solder Studio &middot; Ropa personalizada &middot; Buenos Aires, Argentina
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
