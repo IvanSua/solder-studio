@@ -38,7 +38,7 @@
     "@sentry/browser": "^10.46.0",
     "konva": "^9.3.0",
     "rxjs": "~7.8.0",
-    "tslib": "^2.6.0",
+    "tslib": "^2.9.1",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
