@@ -84,7 +84,7 @@
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
-            <version>8.5.17</version>
+            <version>9.0.4</version>
         </dependency>
         <!-- OkHttp — required by MinIO client (not properly declared as transitive) -->
         <dependency>
