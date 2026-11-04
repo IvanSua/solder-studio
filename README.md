@@ -1,6 +1,7 @@
 # Solder Studio — Tienda de Ropa
 
 > Proyecto personal de Iván Suárez. Esta es una copia pública para portfolio: las credenciales, los datos de contacto y los documentos internos fueron retirados. Las variables `change-me` deben reemplazarse por valores propios usando `.env.example`.
+n> **Reclutadores:** si querés probar la aplicación, pedime usuario y clave por [LinkedIn](https://www.linkedin.com/in/ivan-suarez-766b29228/). Se los comparto solo a reclutadores que pueda verificar, indicando empresa y búsqueda.
 
 E-commerce de ropa con personalización de prendas en tiempo real. Los usuarios pueden diseñar sus propias prendas usando un editor de canvas y hacer el checkout con MercadoPago.
 
