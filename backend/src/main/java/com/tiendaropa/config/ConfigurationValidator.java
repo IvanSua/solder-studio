@@ -65,7 +65,8 @@ public class ConfigurationValidator implements ApplicationRunner {
             "DB_PASSWORD",
             "JWT_SECRET",
             "MP_ACCESS_TOKEN",
-            "MP_WEBHOOK_SECRET"
+            "MP_WEBHOOK_SECRET",
+            "ACTUATOR_METRICS_PASSWORD"
         );
 
         List<String> missing = requiredProdVars.stream()

@@ -129,6 +129,7 @@ Arranca en `http://localhost:4200`.
 | `PUSH_VAPID_PRIVATE_KEY` | Clave VAPID privada (Web Push) | — |
 | `ACTUATOR_METRICS_USERNAME` | Usuario HTTP Basic para `/actuator/prometheus` y `/actuator/metrics/**` (scrape de Prometheus) | `prometheus` |
 | `ACTUATOR_METRICS_PASSWORD` | Password HTTP Basic para esos mismos endpoints — **cambiar en producción** | placeholder inseguro |
+| `DEV_SEED_PASSWORD` | Contraseña de los usuarios de prueba locales. Si no se define, no se crean | (vacío) |
 
 **Generar claves VAPID:**
 ```bash

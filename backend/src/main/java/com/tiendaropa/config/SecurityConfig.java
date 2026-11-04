@@ -58,10 +58,10 @@ public class SecurityConfig {
     // basic_auth at the same values. Without this, metrics endpoints previously
     // required a user JWT, which Prometheus can never supply — the monitoring
     // stack could not actually scrape the app in any environment.
-    @Value("${app.actuator.metrics-username:prometheus}")
+    @Value("${ACTUATOR_METRICS_USERNAME:prometheus}")
     private String actuatorMetricsUsername;
 
-    @Value("${app.actuator.metrics-password:dev-only-change-in-production}")
+    @Value("${ACTUATOR_METRICS_PASSWORD:dev-only-change-in-production}")
     private String actuatorMetricsPassword;
 
     /**

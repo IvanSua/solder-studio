@@ -7,7 +7,7 @@ Requiere [k6](https://k6.io/docs/get-started/installation/).
 k6 run catalog-load-test.js
 
 # contra staging, con más carga
-BASE_URL=https://tiendaropa-backend-staging.up.railway.app TARGET_RPS=200 DURATION=3m k6 run catalog-load-test.js
+BASE_URL=https://tu-backend-de-staging.example.com TARGET_RPS=200 DURATION=3m k6 run catalog-load-test.js
 ```
 
 Leé el comentario al principio de `catalog-load-test.js` antes de correrlo contra

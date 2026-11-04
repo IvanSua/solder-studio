@@ -6,6 +6,7 @@ import com.tiendaropa.enums.UserRole;
 import com.tiendaropa.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
@@ -16,15 +17,15 @@ import org.springframework.stereotype.Component;
  * Seeds test users on first startup (dev/QA only).
  * Idempotent — does nothing if the users already exist.
  *
- * Credentials:
- *   admin@tiendaropa.com  / Admin1234!  (ADMIN)
- *   user@tiendaropa.com   / User1234!   (CUSTOMER)
+ * Users are only created when DEV_SEED_PASSWORD is set; both accounts use that value:
+ *   admin@tiendaropa.com  (ADMIN)
+ *   user@tiendaropa.com   (CUSTOMER)
  *
  * @Profile("!prod") — this must never run against a production database. It has
- * no guard against overwriting real accounts and creates an ADMIN user with a
- * publicly-documented password. Excluded specifically (rather than opt-in to
- * "dev"/"test") so it still runs with no active profile set (SPRING_PROFILES_ACTIVE
- * unset), which is what plain local `./mvnw spring-boot:run` uses.
+ * no guard against overwriting real accounts and creates an ADMIN user. Excluded
+ * specifically (rather than opt-in to "dev"/"test") so it still runs with no active
+ * profile set (SPRING_PROFILES_ACTIVE unset), which is what plain local
+ * `./mvnw spring-boot:run` uses.
  */
 @Component
 @Profile("!prod")
@@ -35,10 +36,17 @@ public class DevDataSeeder implements ApplicationRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Value("${DEV_SEED_PASSWORD:}")
+    private String seedPassword;
+
     @Override
     public void run(ApplicationArguments args) {
-        seedUser("admin@tiendaropa.com", "Admin1234!", "Admin", "Tienda", UserRole.ADMIN);
-        seedUser("user@tiendaropa.com",  "User1234!",  "Cliente", "Demo",  UserRole.CUSTOMER);
+        if (seedPassword == null || seedPassword.isBlank()) {
+            log.info("Dev seed skipped: DEV_SEED_PASSWORD is not set");
+            return;
+        }
+        seedUser("admin@tiendaropa.com", seedPassword, "Admin", "Tienda", UserRole.ADMIN);
+        seedUser("user@tiendaropa.com",  seedPassword, "Cliente", "Demo",  UserRole.CUSTOMER);
     }
 
     private void seedUser(String email, String password, String firstName, String lastName, UserRole role) {
